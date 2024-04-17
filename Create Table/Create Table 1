@@ -1,0 +1,114 @@
+//Table Bandeira
+
+CREATE TABLE Bandeira(
+    Id int AUTO_INCREMENT not null,
+    Descricao varchar(100) not null,
+    Imagem varchar(100) not null,
+    CONSTRAINT PK_ID_BANDEIRA PRIMARY KEY(Id),
+    UNIQUE(Imagem)
+    )
+
+//Table TipoCombustivel
+
+CREATE TABLE TipoCombustivel(
+    Id int AUTO_INCREMENT not null,
+    Descricao varchar(25) not null,
+	Unidade varchar(10) not null,
+    CONSTRAINT PK_ID_TIPO_COMBUSTIVEL PRIMARY KEY(Id)
+    )
+
+//Table Cliente
+
+CREATE TABLE Cliente(
+    Id int AUTO_INCREMENT not null,
+    Email varchar(100) not null,
+	Nome varchar(100) not null,
+    LocalizacaoGps varchar(50),
+    Senha varchar(10),
+    CONSTRAINT PK_ID_CLIENTE PRIMARY KEY(Id),
+    UNIQUE(Email)
+    )
+//Table Cidade
+
+CREATE TABLE Cidade(
+    Id int AUTO_INCREMENT NOT NULL,
+    Descricao VARCHAR(50) not null,
+    CONSTRAINT PK_ID_CIDADE PRIMARY KEY(Id)
+    )
+
+//Table Estado
+CREATE TABLE Estado(
+    Id int AUTO_INCREMENT NOT NULL,
+    Descricao VARCHAR(2) not null,
+    CONSTRAINT PK_ID_ESTADO PRIMARY KEY(Id)
+    )
+
+
+//Table Endereco
+
+CREATE TABLE Endereco(
+    Id int AUTO_INCREMENT not null,
+    Logradouro varchar(100) not null,
+    Numero varchar(10) not null,
+    Cep varchar(8),
+    IdCidade int,
+    IdEstado int,
+    LocalizacaoGps varchar(50),
+    CONSTRAINT PK_ID_ENDERECO PRIMARY KEY(Id),
+    CONSTRAINT FK_ID_CIDADE FOREIGN KEY (IdCidade) REFERENCES Cidade(Id),
+    CONSTRAINT FK_ID_ESTADO FOREIGN KEY (IdEstado) REFERENCES Estado(Id)
+    )
+
+//Table Posto
+
+CREATE TABLE Posto(
+    Cnpj varchar(14) not null,
+  	NomeFantasia varchar(100) not null,
+    Descricao varchar(100),
+    IdBandeira int not null,
+    RazaoSocial varchar(100) not null,
+    IdEndereco int not null,
+    Email varchar(100) not null,
+    Senha varchar(10) not null,
+    CONSTRAINT PK_CNPJ_POSTO PRIMARY KEY(Cnpj),
+    CONSTRAINT FK_ID_BANDEIRA FOREIGN KEY(IdBandeira) REFERENCES Bandeira(Id),
+    CONSTRAINT FK_ID_ENDERECO FOREIGN KEY(IdEndereco) REFERENCES Endereco(Id),
+    UNIQUE(Cnpj, Email)
+    )
+
+//Table Combustivel
+CREATE TABLE Combustivel(
+    Id int AUTO_INCREMENT not null,
+    IdTipo int not null,
+    Valor decimal(10,2) not null,
+    Distribuidor varchar(100) not null,
+    Data Date not null,
+    CnpjPosto varchar(14) not null,
+    CONSTRAINT PK_ID_COMBUSTIVEL PRIMARY KEY(Id),
+    CONSTRAINT FK_ID_TIPO FOREIGN KEY(IdTipo) REFERENCES TipoCombustivel(Id),
+    CONSTRAINT FK_CNPJ_POSTO FOREIGN KEY(CnpjPosto) REFERENCES Posto(Cnpj)
+    )
+
+//Table Telefone
+
+CREATE TABLE Telefone(
+	Id int AUTO_INCREMENT not null,
+    Descricao varchar(50) not null,
+    Numero varchar(25) not null,
+    CnpjPosto varchar(14) not null,
+    CONSTRAINT PK_ID_TELEFONE PRIMARY KEY(Id),
+    CONSTRAINT FK_CNPJ_POSTO_TELEFONE FOREIGN KEY(CnpjPosto) REFERENCES Posto(Cnpj)
+)
+
+//Table Avaliação
+
+CREATE TABLE Avaliacao(
+	Id int AUTO_INCREMENT not null,
+    CnpjPosto varchar(14) not null,
+    Comentario varchar(100),
+    Nota int not null,
+    IdCliente int not null,
+    CONSTRAINT PK_ID_AVALIACAO PRIMARY KEY(Id),
+    CONSTRAINT FK_CNPJ_POSTO_AVALIACAO FOREIGN KEY(CnpjPosto) REFERENCES Posto(Cnpj),
+    CONSTRAINT FK_ID_CLIENTE_AVALIACAO FOREIGN KEY(IdCliente) REFERENCES Cliente(Id)
+)
